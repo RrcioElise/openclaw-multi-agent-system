@@ -1,0 +1,300 @@
+# Gateway Configuration Template
+
+# OpenClaw Gateway Configuration
+# This is a template - copy and customize for your setup
+
+# Server Configuration
+server:
+  port: 3000
+  host: 0.0.0.0
+  # Use HTTPS in production
+  # ssl:
+  #   cert: /path/to/cert.pem
+  #   key: /path/to/key.pem
+
+# Workspace Configuration
+workspace:
+  root: ~/.openclaw/workspaces/main
+  # Additional workspaces
+  # workspaces:
+  #   - name: project1
+  #     path: ~/projects/project1
+  #   - name: project2
+  #     path: ~/projects/project2
+
+# Agent Definitions
+agents:
+  # Main orchestrator agent
+  - id: main
+    name: orchestrator
+    model: claude-sonnet-4
+    workspace: main
+    files:
+      soul: SOUL.md
+      agents: AGENTS.md
+      tools: TOOLS.md
+      identity: IDENTITY.md
+      user: USER.md
+    
+  # Worker agents
+  - id: task1
+    name: architect
+    model: claude-sonnet-4
+    workspace: main
+    parent: main
+    files:
+      soul: souls/architect.md
+      tools: TOOLS.md
+    
+  - id: task2
+    name: developer
+    model: gpt-4
+    workspace: main
+    parent: main
+    files:
+      soul: souls/developer.md
+      tools: TOOLS.md
+    
+  - id: task3
+    name: tester
+    model: claude-haiku-3
+    workspace: main
+    parent: main
+    files:
+      soul: souls/tester.md
+      tools: TOOLS.md
+
+# Model Provider Configuration
+models:
+  # OpenAI
+  - provider: openai
+    api_key: ${OPENAI_API_KEY}
+    models:
+      - gpt-4
+      - gpt-4-turbo
+      - gpt-3.5-turbo
+    # Optional: Custom endpoint
+    # endpoint: https://api.openai.com/v1
+    
+  # Anthropic
+  - provider: anthropic
+    api_key: ${ANTHROPIC_API_KEY}
+    models:
+      - claude-opus-4
+      - claude-sonnet-4
+      - claude-haiku-3
+    
+  # Google
+  # - provider: google
+  #   api_key: ${GOOGLE_API_KEY}
+  #   models:
+  #     - gemini-pro
+  #     - gemini-pro-vision
+  
+  # Local models (Ollama)
+  # - provider: ollama
+  #   endpoint: http://localhost:11434
+  #   models:
+  #     - llama2
+  #     - codellama
+
+# Rate Limiting
+rate_limits:
+  # Per-provider limits
+  openai:
+    requests_per_minute: 50
+    tokens_per_minute: 90000
+  
+  anthropic:
+    requests_per_minute: 50
+    tokens_per_minute: 100000
+  
+  # Global limits
+  global:
+    max_concurrent_requests: 10
+
+# Resource Limits
+limits:
+  # Agent limits
+  max_concurrent_agents: 10
+  max_agents_per_user: 5
+  
+  # Execution limits
+  max_execution_time: 30m
+  max_idle_time: 10m
+  
+  # Memory limits
+  max_memory_per_agent: 2GB
+  max_total_memory: 8GB
+  
+  # File limits
+  max_file_size: 100MB
+  max_files_per_task: 100
+
+# Agent Pool (optional)
+# Pre-spawn idle agents for faster response
+agent_pool:
+  enabled: false
+  # agents:
+  #   task1:
+  #     min_idle: 1
+  #     max_idle: 3
+  #   task2:
+  #     min_idle: 2
+  #     max_idle: 5
+
+# Session Management
+sessions:
+  # Session timeout
+  timeout: 1h
+  
+  # Session cleanup
+  cleanup:
+    enabled: true
+    interval: 1h
+    max_age: 7d
+  
+  # Session storage
+  storage:
+    type: filesystem  # or redis, postgres
+    path: ~/.openclaw/sessions
+
+# Logging
+logging:
+  level: info  # debug, info, warn, error
+  
+  # Log destinations
+  destinations:
+    - type: file
+      path: ~/.openclaw/logs/gateway.log
+      max_size: 100MB
+      max_files: 10
+    
+    # - type: console
+    #   format: json
+    
+    # - type: syslog
+    #   host: localhost
+    #   port: 514
+
+# Monitoring
+monitoring:
+  enabled: true
+  
+  # Metrics collection
+  metrics:
+    enabled: true
+    interval: 60s
+    
+  # Health checks
+  health_check:
+    enabled: true
+    interval: 30s
+    endpoint: /health
+  
+  # Prometheus metrics (optional)
+  # prometheus:
+  #   enabled: true
+  #   port: 9090
+  #   path: /metrics
+
+# Security
+security:
+  # Authentication
+  auth:
+    enabled: false
+    # type: jwt
+    # secret: ${JWT_SECRET}
+    # expiry: 24h
+  
+  # CORS
+  cors:
+    enabled: true
+    origins:
+      - http://localhost:3000
+      - https://yourdomain.com
+  
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    window: 15m
+    max_requests: 100
+
+# Proxy Configuration
+proxy:
+  # HTTP/HTTPS proxy
+  # http: http://proxy.example.com:8080
+  # https: http://proxy.example.com:8080
+  
+  # SOCKS proxy
+  # socks: socks5h://127.0.0.1:7897
+  
+  # No proxy for these hosts
+  # no_proxy:
+  #   - localhost
+  #   - 127.0.0.1
+  #   - .internal.com
+
+# Skills
+skills:
+  # Skills directory
+  directory: ~/.openclaw/skills
+  
+  # Auto-load skills
+  auto_load:
+    - dispatch-sop-v2
+    # - custom-skill-1
+    # - custom-skill-2
+
+# Webhooks (optional)
+webhooks:
+  enabled: false
+  # endpoints:
+  #   - event: task.completed
+  #     url: https://api.example.com/webhook
+  #     headers:
+  #       Authorization: Bearer ${WEBHOOK_TOKEN}
+  #   
+  #   - event: agent.error
+  #     url: https://api.example.com/alerts
+  #     method: POST
+
+# Backup and Recovery
+backup:
+  enabled: false
+  # schedule: "0 2 * * *"  # Daily at 2 AM
+  # destination: ~/.openclaw/backups
+  # retention: 30d
+
+# Feature Flags
+features:
+  # Enable experimental features
+  experimental: false
+  
+  # Enable agent pooling
+  agent_pool: false
+  
+  # Enable distributed mode
+  distributed: false
+
+# Development Settings
+development:
+  # Auto-reload on config changes
+  auto_reload: true
+  
+  # Mock LLM responses for testing
+  mock_llm: false
+  
+  # Verbose error messages
+  verbose_errors: true
+
+# Production Settings
+production:
+  # Strict mode
+  strict: true
+  
+  # Disable debug features
+  debug: false
+  
+  # Enable all security features
+  security_hardened: true

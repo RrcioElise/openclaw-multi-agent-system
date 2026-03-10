@@ -1,0 +1,56 @@
+server:
+  port: 3000
+  host: 0.0.0.0
+
+workspace:
+  root: ~/.openclaw/workspaces/3-agent-dev-team
+
+agents:
+  - id: main
+    name: orchestrator
+    model: claude-sonnet-4
+    workspace: 3-agent-dev-team
+    files:
+      agents: AGENTS.md
+    
+  - id: task1
+    name: architect
+    model: claude-sonnet-4
+    workspace: 3-agent-dev-team
+    parent: main
+    files:
+      soul: souls/architect.md
+    
+  - id: task2
+    name: developer
+    model: gpt-4
+    workspace: 3-agent-dev-team
+    parent: main
+    files:
+      soul: souls/developer.md
+    
+  - id: task3
+    name: tester
+    model: claude-haiku-3
+    workspace: 3-agent-dev-team
+    parent: main
+    files:
+      soul: souls/tester.md
+
+models:
+  - provider: openai
+    api_key: ${OPENAI_API_KEY}
+    
+  - provider: anthropic
+    api_key: ${ANTHROPIC_API_KEY}
+
+limits:
+  max_concurrent_agents: 3
+  max_execution_time: 30m
+  max_memory_per_agent: 2GB
+
+logging:
+  level: info
+  destinations:
+    - type: file
+      path: ~/.openclaw/logs/3-agent-dev-team.log
