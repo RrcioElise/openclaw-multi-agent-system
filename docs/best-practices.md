@@ -427,7 +427,7 @@ Log all agent actions:
   "agent": "task1",
   "action": "file_write",
   "target": "src/auth.ts",
-  "user": "alshyib",
+  "user": "your-username",
   "session": "abc123",
   "success": true
 }
