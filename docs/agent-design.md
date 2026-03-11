@@ -344,7 +344,7 @@ Define what tools and resources each agent can access.
 
 ## Environment
 - Working directory: ~/project/src
-- Proxy: socks5h://127.0.0.1:7897
+- Proxy: socks5h://127.0.0.1:1080
 - Timezone: UTC+8
 
 ## File Access

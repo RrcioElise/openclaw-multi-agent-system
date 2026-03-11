@@ -474,14 +474,14 @@ function detectConflicts(tasks) {
 
 **Symptoms**:
 ```
-Error: ECONNREFUSED 127.0.0.1:7897
+Error: ECONNREFUSED 127.0.0.1:1080
 Error: Proxy connection timeout
 ```
 
 **Diagnosis**:
 ```bash
 # Check if proxy is running
-curl -x socks5h://127.0.0.1:7897 https://api.openai.com
+curl -x socks5h://127.0.0.1:1080 https://api.openai.com
 
 # Check proxy process
 ps aux | grep proxy
@@ -498,8 +498,8 @@ ssh -D 7897 -N user@proxy-server
 2. **Update proxy settings**:
 ```bash
 # TOOLS.md
-export HTTPS_PROXY=socks5h://127.0.0.1:7897
-export HTTP_PROXY=socks5h://127.0.0.1:7897
+export HTTPS_PROXY=socks5h://127.0.0.1:1080
+export HTTP_PROXY=socks5h://127.0.0.1:1080
 ```
 
 3. **Bypass proxy for local requests**:
